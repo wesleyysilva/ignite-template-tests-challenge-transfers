@@ -28,7 +28,7 @@ export class accountsTable1616682561481 implements MigrationInterface {
         {
           name: 'type',
           type: 'enum',
-          enum: ['deposit', 'withdraw']
+          enum: ['deposit', 'withdraw', 'transfer']
         },
         {
           name: 'created_at',
@@ -39,6 +39,11 @@ export class accountsTable1616682561481 implements MigrationInterface {
           name: 'updated_at',
           type: 'timestamp',
           default: 'now()'
+        },
+        {
+          name: 'sender_id',
+          type: 'uuid',
+          isNullable: true
         }
       ],
       foreignKeys: [
@@ -49,9 +54,18 @@ export class accountsTable1616682561481 implements MigrationInterface {
           referencedColumnNames: ['id'],
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE'
-        }
+        },
+        {
+          name: 'fk_sender_transfer',
+          columnNames: ['sender_id'],
+          referencedTableName: 'users',
+          referencedColumnNames: ['id'],
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+
       ]
-    }))
+    }));
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
