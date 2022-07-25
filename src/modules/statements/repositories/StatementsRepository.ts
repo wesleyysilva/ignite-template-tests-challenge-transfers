@@ -6,29 +6,6 @@ import { IGetBalanceDTO } from "../useCases/getBalance/IGetBalanceDTO";
 import { IGetStatementOperationDTO } from "../useCases/getStatementOperation/IGetStatementOperationDTO";
 import { IStatementsRepository } from "./IStatementsRepository";
 
-
-function getBalance(statement: Statement[]) {
-  const balance = statement.reduce((acc, operation) => {
-
-    if (operation.type === 'transfer') {
-      if (operation.sender_id) {
-        return acc - Number(operation.amount);
-      } else {
-        return acc + Number(operation.amount);
-      }
-    } else {
-
-      if (operation.type === 'deposit') {
-        return acc + Number(operation.amount);
-      } else {
-        return acc - Number(operation.amount);
-      }
-    }
-  }, 0);
-
-  return (balance);
-}
-
 export class StatementsRepository implements IStatementsRepository {
   private repository: Repository<Statement>;
 
@@ -86,12 +63,10 @@ export class StatementsRepository implements IStatementsRepository {
       ]
     });
 
-    // const balance = getBalance(statement);
-
     const balance = statement.reduce((acc, operation) => {
 
       if (operation.type === 'transfer') {
-        if (operation.sender_id) {
+        if (operation.sender_id === user_id) {
           return acc - Number(operation.amount);
         } else {
           return acc + Number(operation.amount);

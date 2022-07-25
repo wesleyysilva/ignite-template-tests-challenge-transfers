@@ -34,7 +34,7 @@ class CreateTransfersUseCase {
 		private usersRepository: IUsersRepository
 	) { }
 
-	async execute({ user_id, sender_id, amount, description }: IRequest): Promise<IResponse> {
+	async execute({ user_id, sender_id, amount, description }: IRequest) {
 
 		const userSource = await this.usersRepository.findById(sender_id);
 		const useTarget = await this.usersRepository.findById(user_id);
@@ -46,27 +46,12 @@ class CreateTransfersUseCase {
 			throw new CreateTransfersError.UserTagetNotFound();
 		}
 
-		const balance = await this.statementsRepository.getUserBalance({
-			user_id,
-			with_statement: true
-		}) as IResponse;
+		const { balance } = await this.statementsRepository.getUserBalance({
+			user_id: String(userSource.id),
+			with_statement: false
+		});
 
-		const { balance: valor } = balance;
-
-		console.log(balance);
-
-		console.log('****************************');
-
-		console.log(valor);
-
-		console.log('****************************');
-		console.log(amount);
-
-		console.log('****************************');
-
-
-		if ((valor - amount) < 0) {
-
+		if ((balance - amount) < 0) {
 			throw new CreateTransfersError.UserSourceNotFunds();
 		}
 
@@ -78,8 +63,7 @@ class CreateTransfersUseCase {
 			sender_id: String(userSource.id)
 		});
 
-		return balance as IResponse;
-
+		return statement;
 	}
 }
 

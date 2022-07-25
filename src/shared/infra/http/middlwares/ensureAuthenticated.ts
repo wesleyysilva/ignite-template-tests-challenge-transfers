@@ -16,19 +16,11 @@ export async function ensureAuthenticated(
 ) {
   const authHeader = request.headers.authorization;
 
-
-  console.log(authHeader);
-
   if (!authHeader) {
     throw new JWTTokenMissingError();
   }
 
   const [, token] = authHeader.split(" ");
-
-  console.log(token);
-  console.log('(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((');
-  console.log(authConfig.jwt.secret);
-
 
   try {
     const { sub: user_id } = verify(token, authConfig.jwt.secret) as IPayload;

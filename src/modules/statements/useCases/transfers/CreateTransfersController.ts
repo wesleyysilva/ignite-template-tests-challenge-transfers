@@ -12,12 +12,6 @@ class CreateTransfersController {
     const sender_id = request.user.id;
     const user_id = request.params.user_id;
 
-
-    console.log(user_id);
-    console.log(sender_id);
-    console.log(description);
-    console.log(request.body);
-
     const createTransfer = container.resolve(CreateTransfersUseCase);
 
     const statement = await createTransfer.execute({
@@ -26,6 +20,9 @@ class CreateTransfersController {
       amount,
       description
     });
+
+
+
 
     return response.status(201).json(statement);
   }
